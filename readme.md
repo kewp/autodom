@@ -112,3 +112,70 @@ else
 }
 ```
 
+so as per the link in `script.js` i'm building up the
+dom manually as i would need to with pure javascript
+i.e. this is what auto would have to do. but how do
+we connect our auto state with the dom?
+
+## jsx
+
+i spent some time trying to get jsx to work. the
+idea is that, ideally, we want to just write html
+with some extra tags. and jsx does this perfectly
+well.
+
+```js
+let $ = auto({
+    '<root>': ($) => $.list.forEach( item => <ListItem {item} /> )
+})
+```
+
+when does the bind happen, i mean `createElement` ?
+when does the update happen? do you describe each element
+inside of an auto wrap? what would be the cleanest way
+to do this?
+
+### functions
+
+what's great about jsx is it's just functions
+
+```js
+function MyComponent() {
+    return <div>This is JSX</div>;
+}
+```
+
+which slots great into auto. however, the point of auto
+is to break down each component of your calculations
+into pieces called _values_ each of which has their
+of function and is cached. this is not really components
+(since components are functions) but instances.
+
+```js
+let $ = auto({
+    'sidebar': ($) =>
+        <header>
+            <section>
+                <p>Sidebar title</p>
+            </section>
+            <MyButton {$.name} />
+        </header>
+})
+```
+
+i guess the difference with **autodom** is that
+values aren't saved in a javascript object
+(or cached rather than saved) but rather on the
+dom. which kind of means it's a re-write of
+auto, unless i can come up with ... a generic
+way of specifying how to load / save values?
+
+ - i need the load to check for subscriptions (only that?)
+ - is it just a save method otherwise?
+
+i suppose the only difference, then, for using
+auto as a ui lib (i mean just defining some
+access methods for load/save) is then implementing
+a jsx-type parser so we can use elements and
+the angle brackets 'cause that's what people
+are used to...
